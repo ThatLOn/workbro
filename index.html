@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>glitchy — about me</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: rgba(255,255,255,0.03);
+            --border: rgba(100,200,255,0.12);
+            --accent: #64c8ff;
+            --accent2: #a78bfa;
+            --accent3: #34d399;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --glow: rgba(100,200,255,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text);
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(100,200,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(100,200,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 { width: 400px; height: 400px; background: rgba(100,200,255,0.06); top: -100px; right: -100px; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: rgba(167,139,250,0.06); bottom: 100px; left: -80px; animation-delay: 3s; }
+        .orb-3 { width: 200px; height: 200px; background: rgba(52,211,153,0.04); top: 50%; left: 50%; animation-delay: 6s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(60px); }
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.05) 2px,
+                rgba(0,0,0,0.05) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        /* Music button */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .music-btn:hover {
+            background: rgba(100,200,255,0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(100,200,255,0.2);
+        }
+        .music-btn.playing {
+            border-color: var(--accent3);
+            color: var(--accent3);
+        }
+        .music-btn.playing:hover {
+            background: rgba(52,211,153,0.1);
+            box-shadow: 0 0 20px rgba(52,211,153,0.2);
+        }
+        .music-icon {
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        .bar {
+            width: 3px;
+            background: currentColor;
+            border-radius: 1px;
+            transition: height 0.3s;
+        }
+        .bar-1 { height: 6px; }
+        .bar-2 { height: 10px; }
+        .bar-3 { height: 8px; }
+        .bar-4 { height: 14px; }
+        .music-btn.playing .bar {
+            animation: equalize 1.2s ease-in-out infinite alternate;
+        }
+        .music-btn.playing .bar-1 { animation-delay: 0s; }
+        .music-btn.playing .bar-2 { animation-delay: 0.2s; }
+        .music-btn.playing .bar-3 { animation-delay: 0.4s; }
+        .music-btn.playing .bar-4 { animation-delay: 0.1s; }
+        @keyframes equalize {
+            from { height: 4px; }
+            to { height: 14px; }
+        }
+
+        /* Header */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            margin-bottom: 56px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .avatar-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent), var(--accent2), var(--accent3), var(--accent));
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .avatar-wrap::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent), var(--accent2), var(--accent3), var(--accent));
+            filter: blur(8px);
+            opacity: 0.4;
+            animation: spin 4s linear infinite;
+        }
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+            border: 3px solid var(--bg);
+        }
+
+        .hero-text {}
+        .handle {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            opacity: 0.8;
+        }
+        .name {
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .discord-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--accent2);
+            text-decoration: none;
+            border: 1px solid rgba(167,139,250,0.3);
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: all 0.25s;
+        }
+        .discord-link:hover {
+            background: rgba(167,139,250,0.1);
+            border-color: var(--accent2);
+            box-shadow: 0 0 16px rgba(167,139,250,0.2);
+            color: var(--accent2);
+            text-decoration: none;
+        }
+        .discord-link::before { content: '◆'; font-size: 8px; }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            animation: fadeUp 0.6s ease both;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+        .card:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.75;
+            font-weight: 400;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        /* Numbered list */
+        .reason-list {
+            list-style: none;
+            margin: 0;
+        }
+        .reason-list li {
+            display: flex;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+        .reason-list li:last-child { border-bottom: none; padding-bottom: 0; }
+        .reason-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            background: rgba(100,200,255,0.08);
+            border: 1px solid rgba(100,200,255,0.15);
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Nav / TOC */
+        .toc {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: fadeUp 0.6s ease both;
+        }
+        .toc a {
+            display: block;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .toc a::before {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%) translateX(6px);
+            color: var(--accent);
+            opacity: 0;
+            transition: all 0.25s;
+        }
+        .toc a:hover {
+            border-color: var(--accent);
+            background: rgba(100,200,255,0.06);
+            color: var(--accent);
+            padding-right: 36px;
+        }
+        .toc a:hover::before {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+        .toc-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Social links */
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+        .social-link:hover {
+            border-color: var(--accent);
+            background: rgba(100,200,255,0.06);
+            transform: translateX(4px);
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .icon-roblox { background: rgba(255,255,255,0.05); }
+        .icon-youtube { background: rgba(255,50,50,0.12); }
+        .social-arrow {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 12px;
+            transition: all 0.25s;
+        }
+        .social-link:hover .social-arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: rgba(148,163,184,0.4);
+            animation: fadeUp 0.6s ease 0.5s both;
+        }
+
+        /* Glitch effect on hover for name */
+        .name:hover {
+            animation: glitch 0.3s ease;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); filter: hue-rotate(30deg); }
+            40% { transform: translate(2px, -1px); filter: hue-rotate(-30deg); }
+            60% { transform: translate(-1px, 2px); filter: hue-rotate(60deg); }
+            80% { transform: translate(1px, -2px); filter: hue-rotate(-60deg); }
+            100% { transform: translate(0); filter: hue-rotate(0); }
+        }
+
+        @media (max-width: 520px) {
+            .toc { grid-template-columns: 1fr; }
+            .hero { flex-direction: column; text-align: center; }
+            .music-btn span { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.image2url.com/r2/default/audio/1779170568892-42eb28b5-5d80-4359-8b43-686d4dcb8033.mp3" type="audio/mpeg">
+    </audio>
+
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+        <div class="music-icon">
+            <div class="bar bar-1"></div>
+            <div class="bar bar-2"></div>
+            <div class="bar bar-3"></div>
+            <div class="bar bar-4"></div>
+        </div>
+        <span id="musicLabel">play music</span>
+    </button>
+
+    <div class="wrapper">
+        <div class="hero">
+            <div class="avatar-wrap">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/764374875833368627/eebc40724a43a387795ad46e90bfd59d.png?size=256" alt="glitchy">
+            </div>
+            <div class="hero-text">
+                <div class="handle">// profile</div>
+                <div class="name">glitchy</div>
+                <a class="discord-link" href="https://discord.gg/BpTUaDKjqD" target="_blank">join my roblox game discord</a>
+            </div>
+        </div>
+
+        <div class="toc">
+            <a href="#about">
+                about me
+                <span class="toc-sub">// who i am</span>
+            </a>
+            <a href="#interest">
+                why html
+                <span class="toc-sub">// what got me here</span>
+            </a>
+        </div>
+
+        <div class="card" id="about">
+            <div class="card-label">about me</div>
+            <p>When i was 9, i started creating games in roblox. And when i was 13 i started learning how to produce in FL STUDIO</p>
+            <h2 style="margin-top:20px;">Why I like doing this</h2>
+            <ul class="reason-list">
+                <li>
+                    <span class="reason-num">01</span>
+                    <span>Doing stuff that I like in my free time really is just peaceful (click play music to hear one of my beats) </span>
+                </li>
+                <li>
+                    <span class="reason-num">02</span>
+                    <span>I always step away from what i do for months, maybe years and come back to it. and everytime i come back to it, something clicks</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card" id="interest">
+            <div class="card-label">why i made this</div>
+            <p>I started learning HTML today (5/18/26) we were doing star testing in English and I noticed the password field masking characters with bullet points. I thought it was interesting how it worked, looked it up, and got pulled down a rabbit hole. I didn't understand any of it at first, but it made me want to learn for myself.</p>
+            <h2 style="margin-top:20px;">What clicked for me</h2>
+            <ul class="reason-list">
+                <li>
+                    <span class="reason-num">01</span>
+                    <span>I was suprised how easy this language is, and how fun it is to create stuff with</span>
+                </li>
+                <li>
+                    <span class="reason-num">02</span>
+                    <span>idk i feel like i nerd n discord mod doing ts, but i dont got nothing else going in my life i just make shit</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-label">links</div>
+            <div class="social-links">
+                <a class="social-link" href="https://www.roblox.com/users/profile" target="_blank">
+                    <div class="social-icon icon-roblox">🎮</div>
+                    Roblox
+                    <span class="social-arrow">→</span>
+                </a>
+                <a class="social-link" href="https://www.youtube.com/@glitchy_dis" target="_blank">
+                    <div class="social-icon icon-youtube">▶</div>
+                    YouTube
+                    <span class="social-arrow">→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">why im here</div> · glitchy · 2026</div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bgMusic');
+        const btn = document.getElementById('musicBtn');
+        const label = document.getElementById('musicLabel');
+        let playing = false;
+
+        audio.volume = 0.3;
+
+        async function toggleMusic() {
+            if (playing) {
+                audio.pause();
+                playing = false;
+                btn.classList.remove('playing');
+                label.textContent = 'play music';
+            } else {
+                try {
+                    await audio.play();
+                    playing = true;
+                    btn.classList.add('playing');
+                    label.textContent = 'pause music';
+                } catch (e) {
+                    // Autoplay blocked — handled gracefully
+                    console.log('Playback blocked:', e);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
